@@ -1,22 +1,25 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Router, Route, IndexRoute } from 'react-router';
+import { Provider } from 'react-redux';
+import store, { history } from './store';
 
 import App from './components/App';
+import HomePage from './components/HomePage';
+import CompetitionPage from './components/CompetitionPage';
 import NotFound from './components/NotFound';
 import './index.css';
 
-const Root = () => {
-    return (
-        <BrowserRouter>
-            <Switch>
-                <Route exact path="/" component={App} />
-                <Route component={NotFound} />
-            </Switch>
-        </BrowserRouter>
-    )
-}
-render(
-  <Root />,
-  document.getElementById('root')
+const router = (
+    <Provider store={store}>
+        <Router history={history}>
+            <Route path="/" component={App}>
+                <IndexRoute component={HomePage}></IndexRoute>
+                <Route path="/competition" component={CompetitionPage} />
+                <Route path="*" component={NotFound} />
+             </Route>
+        </Router>
+    </Provider>
 );
+
+render(router, document.getElementById('root'));

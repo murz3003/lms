@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as actionCreators from '../actions/actionCreators';
+import Main from './Main';
 
-import Header from './Header';
-import '../css/App.css';
-
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        <p className="App-intro">
-            To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
+function mapStateToProps (state) {
+    return {
+        competitions: state.competitions
+    };
 }
+
+function mapDispatchToProps (dispatch) {
+    return bindActionCreators(actionCreators, dispatch);
+}
+
+const App = connect(mapStateToProps, mapDispatchToProps)(Main);
 
 export default App;
