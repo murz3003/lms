@@ -14,7 +14,7 @@ const router = (
     <Provider store={store}>
         <Router history={history}>
             <Route path="/" component={App}>
-                <IndexRoute component={HomePage}></IndexRoute>
+                <IndexRoute component={HomePage} />
                 <Route path="/competition" component={CompetitionPage} />
                 <Route path="*" component={NotFound} />
              </Route>

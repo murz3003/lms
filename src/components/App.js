@@ -1,7 +1,19 @@
-import { bindActionCreators } from 'redux';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actionCreators from '../actions/actionCreators';
-import Main from './Main';
+
+import Header from './Header';
+import '../css/App.css';
+
+class App extends Component {
+    render() {
+        return (
+            <div className="app">
+                <Header />
+                {React.cloneElement(this.props.children, this.props)}
+            </div>
+        );
+    }
+}
 
 function mapStateToProps (state) {
     return {
@@ -9,10 +21,4 @@ function mapStateToProps (state) {
     };
 }
 
-function mapDispatchToProps (dispatch) {
-    return bindActionCreators(actionCreators, dispatch);
-}
-
-const App = connect(mapStateToProps, mapDispatchToProps)(Main);
-
-export default App;
+export default connect(mapStateToProps)(App);
