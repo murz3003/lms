@@ -7,18 +7,9 @@ import rootReducer from './reducers/index';
 
 const defaultState = {
     competitions: {
-        entered: {
-            title: 'In progress',
-            list: []
-        },
-        available: {
-            title: 'Competitions',
-            list: []
-        },
-        ended: {
-            title: 'Ended',
-            list: []
-        }
+        entered: [],
+        available: [],
+        ended: []
     }
 };
 

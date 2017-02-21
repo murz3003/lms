@@ -1,16 +1,16 @@
-import { apiRoot } from '../config';
-
 export function getCompetitions() {
     return dispatch => {
-        return fetch(`${apiRoot}/competitions`).then(
-            competitions => dispatch({
-                type: 'FETCHED_COMPETITIONS',
-                competitions
-            }),
-            error => dispatch({
-                type: 'ERROR',
-                error
-            })
+        return fetch('/api/competitions').then(
+            res => res.json(res).then(
+                competitions => dispatch({
+                    type: 'FETCHED_COMPETITIONS',
+                    competitions
+                }),
+                error => dispatch({
+                    type: 'ERROR',
+                    error
+                })
+            )
         );
     };
 }

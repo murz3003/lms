@@ -15,6 +15,9 @@ class HomePage extends Component {
         return (
             <div className="home">
                 <p>This is the Home Page</p>
+                <ul>
+                    {this.props.competitions.available.map((competition, i) => (<li key={i}>{competition.title}</li>))}
+                </ul>
                 <Link to="/competition">Competition Page</Link>
             </div>
         );
