@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import Header from './Header';
 import '../css/App.css';
@@ -15,10 +14,4 @@ class App extends Component {
     }
 }
 
-function mapStateToProps (state) {
-    return {
-        competitions: state.competitions
-    };
-}
-
-export default connect(mapStateToProps)(App);
+export default App;
