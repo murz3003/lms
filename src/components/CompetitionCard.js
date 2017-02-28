@@ -11,7 +11,7 @@ import iconCalendar from '../images/icon-calendar.svg';
 class CompetitionCard extends Component {
 
     render() {
-        const { league, round, players, pickedTeam, hasEntered, inProgress } = this.props;
+        const { league, round, players, hasEntered, inProgress, pickedTeam } = this.props;
         const now = new Date();
         const start = new Date(round.start_date);
         const hasStarted = now > start;
@@ -39,7 +39,7 @@ class CompetitionCard extends Component {
 
                 </div>
                 <div className="competition-actions">
-                    {pickedTeam !== null ? (
+                    {inProgress ? (
                         <div className="icons icons-column">
                             <div className="icon-wrapper">
                                 <img className="icon" src={pickedTeam ? iconSelected : iconUnselected} alt="Team Selected" />
@@ -50,9 +50,19 @@ class CompetitionCard extends Component {
                             </div>
                         </div>
                     ) : null }
-                    <button className="btn">
-                        {hasEntered && inProgress && pickedTeam ? 'Change' : (hasEntered && !inProgress ? 'Entered' : 'Play')}
-                    </button>
+
+                    {inProgress ?
+                        (pickedTeam ? (
+                            <button className="btn btn-primary">Change</button>
+                        ) : (
+                            <button className="btn btn-primary">Choose</button>
+                        )) :
+                        (hasEntered ? (
+                            <button className="btn btn-disabled" disabled>Entered</button>
+                        ) : (
+                            <button className="btn btn-primary">Play</button>
+                        ))
+                    }
                 </div>
             </div>
         );

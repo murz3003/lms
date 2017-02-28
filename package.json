@@ -25,7 +25,7 @@
   },
   "scripts": {
     "build-css": "lessc-each src/less/ src/css/",
-    "watch-less": "catw -wc 'npm run build-css' src/less/*",
+    "watch-less": "catw -wc 'npm run build-css' src/less/*.less",
     "start-js": "react-scripts start",
     "start": "npm-run-all -p server watch-less start-js",
     "build": "npm run build-css && react-scripts build",

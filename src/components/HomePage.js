@@ -21,7 +21,7 @@ class HomePage extends Component {
                 <h3>In progress</h3>
                 {this.props.competitions.entered.map((competition, i) => (
                     <Card key={i}>
-                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={true} pickedTeam={competition.entered.pickedTeam} streak={competition.streak} />
+                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={true} pickedTeam={competition.pickedTeam} streak={competition.streak} />
                     </Card>
                 ))}
 
