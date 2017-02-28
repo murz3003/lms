@@ -1,3 +1,30 @@
+@import './imports/variables.less';
+
 .card {
-    background-color: white;
+    background-color: @white;
+    box-shadow: 1px 1px 2px 1px #cecece;
+    padding: @padding-base;
+
+    .icons {
+        .icon {
+            height: @padding-large;
+            width: @padding-large;
+            margin-right: @padding-small;
+            vertical-align: top;
+        }
+    }
+
+    .icons-row {
+        & > div {
+            display: inline-block;
+            line-height: @padding-large;
+            margin-right: @padding-large;
+        }
+    }
+
+    .icons-column {
+        & > div {
+            margin-bottom: @padding-small;
+        }
+    }
 }

@@ -3,20 +3,51 @@ var restify = require('restify'),
 
 // Temporary hard code data to save api calls
 var leagues = require('../data/leagues'),
-	rounds = require('../data/rounds.json');
+    rounds = require('../data/rounds.json');
 
 // Hard code a competition until a model exists
-var competition = {
-		league: leagues[4],
-		round: rounds[25]
-	};
+var enteredCompetitions = [
+        {
+            league: leagues[4],
+            round: rounds[25],
+            entered: true,
+            pickedTeam: false,
+            streak: 4,
+            players: {
+                entered: 15,
+                remaining: 7
+            }
+        }
+    ],
+    availableCompetitions = [
+        {
+            league: leagues[4],
+            round: rounds[26],
+            entered: true,
+            pickedTeam: false,
+            players: {
+                entered: 15,
+                remaining: 15
+            }
+        },
+        {
+            league: leagues[4],
+            round: rounds[26],
+            entered: false,
+            pickedTeam: false,
+            players: {
+                entered: 22,
+                remaining: 22
+            }
+        }
+    ];
 
 server.get('/api/competitions', function (req, res, next) {
     res.send({
-		entered: [], // Only when logged in
-		available: [competition],
-		ended: [] // Only when logged in
-	});
+        entered: enteredCompetitions, // Only when logged in
+        available: availableCompetitions,
+        ended: [] // Only when logged in
+    });
 });
 
 server.listen(8080, function() {

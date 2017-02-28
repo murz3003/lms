@@ -1,3 +1,41 @@
-.competition-card {
+@import './imports/variables.less';
+@import './imports/buttons.less';
 
+.competition-card {
+    position: relative;
+    text-align: left;
+
+    & > div {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .league-logo {
+        margin-right: @padding-base;
+        height: @padding-large * 5;
+        width: @padding-large * 5;
+
+        img {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    .competition-details {
+        .competition-header {
+            margin: 0 0 @padding-base 0;
+        }
+
+        .competition-subheader {
+            color: @grey-base;
+            margin-bottom: @padding-base;
+        }
+    }
+
+    .competition-actions {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        text-align: right;
+    }
 }

@@ -18,12 +18,19 @@ class HomePage extends Component {
             <div className="home">
                 <p>This is the Home Page</p>
 
-				<h3>Competitions</h3>
-				{this.props.competitions.available.map((competition, i) => (
-					<Card key={i}>
-						<CompetitionCard league={competition.league} round={competition.round} />
-					</Card>
-				))}
+                <h3>In progress</h3>
+                {this.props.competitions.entered.map((competition, i) => (
+                    <Card key={i}>
+                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={true} pickedTeam={competition.entered.pickedTeam} streak={competition.streak} />
+                    </Card>
+                ))}
+
+                <h3>Competitions</h3>
+                {this.props.competitions.available.map((competition, i) => (
+                    <Card key={i}>
+                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={false} />
+                    </Card>
+                ))}
 
                 <Link to="/competition">Competition Page</Link>
             </div>
