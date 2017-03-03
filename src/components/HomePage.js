@@ -3,9 +3,9 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { getCompetitions } from '../actions/actionCreators';
 
+import '../css/HomePage.css';
 import Card from './Card';
 import CompetitionCard from './CompetitionCard';
-import '../css/HomePage.css';
 
 class HomePage extends Component {
 

@@ -16,8 +16,8 @@ class CompetitionCard extends Component {
         const now = new Date();
         const start = new Date(round.start_date);
         const hasStarted = now > start;
-        const leagueLogo = require(`../images/leagues/${league.league_slug}.svg`);
         const startMoment = <Moment format={`[${hasStarted ? 'Started' : 'Starts'} on] D MMMM`} date={start} fromNow />;
+        const leagueLogo = require(`../images/leagues/${league.league_slug}.svg`);
 
         return (
             <Link to={`/competition/${league.league_slug}/${round.round_slug}`}>

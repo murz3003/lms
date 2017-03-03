@@ -1,4 +1,4 @@
-function competitions (state = {}, action) {
+export function competitions (state = {}, action) {
     console.log(state, action);
     if (action.type === 'FETCHED_COMPETITIONS') {
         state = {...state};
@@ -8,4 +8,13 @@ function competitions (state = {}, action) {
     return state;
 }
 
-export default competitions;
+export function competitionDetails (state = {}, action) {
+    console.log(state, action);
+    if (action.type === 'FETCHED_COMPETITION_DETAILS') {
+        debugger;
+        state = {...state};
+        state = action.competitions;
+    }
+
+    return state;
+}

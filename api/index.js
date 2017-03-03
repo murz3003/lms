@@ -42,12 +42,21 @@ var enteredCompetitions = [
         }
     ];
 
+var competitionDetails = {
+        league: leagues[4],
+        round: rounds[25]
+    };
+
 server.get('/api/competitions', function (req, res, next) {
     res.send({
         entered: enteredCompetitions, // Only when logged in
         available: availableCompetitions,
         ended: [] // Only when logged in
     });
+});
+
+server.get('/api/competitions/:leagueSlug/:roundSlug', function (req, res, next) {
+    res.send(competitionDetails);
 });
 
 server.listen(8080, function() {

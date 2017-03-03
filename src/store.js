@@ -10,6 +10,10 @@ const defaultState = {
         entered: [],
         available: [],
         ended: []
+    },
+    competitionDetails: {
+        league: {},
+        round: {}
     }
 };
 
