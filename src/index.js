@@ -15,7 +15,7 @@ const router = (
         <Router history={history}>
             <Route path="/" component={App}>
                 <IndexRoute component={HomePage} />
-                <Route path="/competition" component={CompetitionPage} />
+                <Route path="/competition/:league/:round" component={CompetitionPage} />
                 <Route path="*" component={NotFound} />
              </Route>
         </Router>
