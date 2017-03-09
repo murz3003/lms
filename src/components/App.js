@@ -7,7 +7,7 @@ class App extends Component {
     render() {
         return (
             <div className="app">
-                <Header />
+                <Header pathname={this.props.location.pathname} />
                 {React.cloneElement(this.props.children, this.props)}
             </div>
         );

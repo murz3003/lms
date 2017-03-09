@@ -1,20 +1,44 @@
 @import './imports/variables.less';
 
 .header {
+    transition: all 0.2s;
     background-color: #222;
-    height: 150px;
     padding: 20px;
     color: @white;
+
+    .header-logo {
+        transition: all 0.2s;
+        animation: logo-spin infinite 20s linear;
+        height: 80px;
+    }
+
+    .header-title {
+        transition: all 0.2;
+        margin: 0;
+    }
+
+    a {
+        text-decoration: none;
+        color: @white;
+    }
 }
 
-.logo {
-    animation: logo-spin infinite 20s linear;
-    height: 80px;
-}
+.header-small {
+    padding: @padding-base;
+    text-align: left;
 
-.header a {
-    text-decoration: none;
-    color: @white;
+    .header-logo {
+        height: 30px;
+        vertical-align: middle;
+    }
+
+    .header-title {
+        display: inline-block;
+        font-size: 1.2em;
+        line-height: 30px;
+        margin: 0;
+        vertical-align: middle;
+    }
 }
 
 @keyframes logo-spin {
