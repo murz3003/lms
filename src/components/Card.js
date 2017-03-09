@@ -7,8 +7,8 @@ class Card extends Component {
 
     render() {
         return (
-            <div className="card">
-                {React.cloneElement(this.props.children, this.props)}
+            <div className="card" onClick={this.props.onClick}>
+                {this.props.children}
             </div>
         );
     }

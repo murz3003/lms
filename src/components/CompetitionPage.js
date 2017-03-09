@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { getCompetitionDetails } from '../actions/actionCreators';
 
 import '../css/CompetitionPage.css';
+import '../css/CompetitionCard.css';
 import Card from './Card';
 import CardHeader from './CardHeader';
 
@@ -15,25 +16,24 @@ class CompetitionPage extends Component {
     }
 
     render() {
-        debugger;
         const { league, round } = this.props;
         const now = new Date();
-        const start = new Date(round.start_date);
+        const start = round && new Date(round.start_date);
         const hasStarted = now > start;
         const startMoment = start && <Moment format={`[${hasStarted ? 'Started' : 'Starts'} on] D MMMM`} date={start} fromNow />;
-        const leagueLogo = league.league_slug && require(`../images/leagues/${league.league_slug}.svg`);
+        const leagueLogo = league && require(`../images/leagues/${league.league_slug}.svg`);
 
         return (
-            <div className="competition">
-                <p>This is the Competition Page</p>
-
+            <div className="competition-page">
                 {league && round ? (
                     <Card>
-                        <div className="league-logo">
-                            <img src={leagueLogo} alt={`${league.name} Logo`} />
-                        </div>
-                        <div className="competition-details">
-                            <CardHeader header={league.name} subheader={startMoment} />
+                        <div className="competition-card competition-card-small">
+                            <div className="league-logo">
+                                <img src={leagueLogo} alt={`${league.name} Logo`} />
+                            </div>
+                            <div className="competition-details">
+                                <CardHeader header={league.name} subheader={startMoment} />
+                            </div>
                         </div>
                     </Card>
                 ) : null}

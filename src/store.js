@@ -12,8 +12,8 @@ const defaultState = {
         ended: []
     },
     competitionDetails: {
-        league: {},
-        round: {}
+        league: null,
+        round: null
     }
 };
 

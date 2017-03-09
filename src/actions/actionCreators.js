@@ -15,14 +15,20 @@ export function getCompetitions() {
     };
 }
 
+export function selectedCompetition(competition) {
+    return {
+        type: 'SELECTED_COMPETITION',
+        competition
+    };
+}
+
 export function getCompetitionDetails(leagueSlug, roundSlug) {
-    debugger;
     return dispatch => {
         return fetch(`/api/competitions/${leagueSlug}/${roundSlug}`).then(
             res => res.json(res).then(
-                competitions => dispatch({
+                competitionDetails => dispatch({
                     type: 'FETCHED_COMPETITION_DETAILS',
-                    competitions
+                    competitionDetails
                 }),
                 error => dispatch({
                     type: 'ERROR',

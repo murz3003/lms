@@ -1,19 +1,29 @@
 export function competitions (state = {}, action) {
-    console.log(state, action);
-    if (action.type === 'FETCHED_COMPETITIONS') {
-        state = {...state};
-        state = action.competitions;
+    switch(action.type) {
+        case 'FETCHED_COMPETITIONS':
+            state = {...state};
+            state = action.competitions;
+            break;
+        default:
+            return state;
     }
 
     return state;
 }
 
 export function competitionDetails (state = {}, action) {
-    console.log(state, action);
-    if (action.type === 'FETCHED_COMPETITION_DETAILS') {
-        debugger;
-        state = {...state};
-        state = action.competitions;
+    switch(action.type) {
+        case 'FETCHED_COMPETITION_DETAILS':
+            state = {...state};
+            state = action.competitionDetails;
+            break;
+        case 'SELECTED_COMPETITION':
+            state = {...state}
+            state.league = action.competition.league;
+            state.round = action.competition.round;
+            break;
+        default:
+            return state;
     }
 
     return state;

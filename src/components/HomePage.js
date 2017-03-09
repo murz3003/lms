@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { getCompetitions } from '../actions/actionCreators';
+import { getCompetitions, selectedCompetition } from '../actions/actionCreators';
 
 import '../css/HomePage.css';
 import Card from './Card';
@@ -13,14 +13,18 @@ class HomePage extends Component {
         this.props.dispatch(getCompetitions());
     }
 
+    handleCompetitionCardClick(competition) {
+        this.props.dispatch(selectedCompetition(competition));
+    }
+
     render() {
         return (
-            <div className="home">
+            <div className="home-page">
                 <p>This is the Home Page</p>
 
                 <h3>In progress</h3>
                 {this.props.competitions.entered.map((competition, i) => (
-                    <Card key={i}>
+                    <Card key={i} onClick={() => { this.handleCompetitionCardClick(competition); }}>
                         <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={true} pickedTeam={competition.pickedTeam} streak={competition.streak} />
                     </Card>
                 ))}
