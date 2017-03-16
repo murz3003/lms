@@ -1,17 +1,13 @@
 import path from 'path';
 import restify from 'restify';
 
+import { provider as providerName } from './config';
+
+const provider = require(path.resolve(__dirname, providerName));
 const server = restify.createServer();
 
-// Temporary hard code data to save api calls
-import leagues from '../data/leagues.json';
-import rounds from '../data/rounds.json';
-
 // Hard code a competition until a model exists
-var enteredCompetitions = [
-        {
-            league: leagues[4],
-            round: rounds[25],
+var enteredCompetition = {
             entered: true,
             pickedTeam: false,
             streak: 4,
@@ -19,46 +15,50 @@ var enteredCompetitions = [
                 entered: 15,
                 remaining: 7
             }
-        }
-    ],
-    availableCompetitions = [
-        {
-            league: leagues[4],
-            round: rounds[26],
+        },
+    availableCompetition = {
             entered: true,
             pickedTeam: false,
             players: {
                 entered: 15,
                 remaining: 15
             }
-        },
-        {
-            league: leagues[4],
-            round: rounds[26],
-            entered: false,
-            pickedTeam: false,
-            players: {
-                entered: 22,
-                remaining: 22
-            }
-        }
-    ];
-
-var competitionDetails = {
-        league: leagues[4],
-        round: rounds[25]
-    };
+        };
 
 server.get('/api/competitions', function (req, res, next) {
-    res.send({
-        entered: enteredCompetitions, // Only when logged in
-        available: availableCompetitions,
-        ended: [] // Only when logged in
+    const promises = provider.getLeague().concat(provider.getRounds());
+    const now = new Date().toISOString();
+
+    Promise.all(promises).then(data => {
+        return {
+            league: data[0],
+            round: data[1].find((round, i, arr) => {
+                const date = new Date(round.start_date).toISOString();
+                return date > now;
+            })
+        };
+    }).then(data => {
+        const response = {
+                entered: [{...enteredCompetition, ...data}], // Only when logged in
+                available: [{...availableCompetition, ...data}],
+                ended: [] // Only when logged in
+            };
+
+        res.send(response);
     });
 });
 
 server.get('/api/competitions/:leagueSlug/:roundSlug', function (req, res, next) {
-    res.send(competitionDetails);
+    const promises = provider.getLeague(req.params.leagueSlug).concat(provider.getRound(req.params.leagueSlug, undefined, req.params.roundSlug));
+
+    Promise.all(promises).then(data => {
+        const response = {
+                league: data[0],
+                round: data[1]
+            };
+
+        res.send(response);
+    });
 });
 
 server.listen(8080, function() {
