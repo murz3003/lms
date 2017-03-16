@@ -1,9 +1,11 @@
-var restify = require('restify'),
-    server = restify.createServer();
+import path from 'path';
+import restify from 'restify';
+
+const server = restify.createServer();
 
 // Temporary hard code data to save api calls
-var leagues = require('../data/leagues'),
-    rounds = require('../data/rounds.json');
+import leagues from '../data/leagues.json';
+import rounds from '../data/rounds.json';
 
 // Hard code a competition until a model exists
 var enteredCompetitions = [

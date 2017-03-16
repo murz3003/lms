@@ -4,6 +4,8 @@
   "private": true,
   "proxy": "http://localhost:8080/",
   "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
     "catw": "^1.0.1",
     "lessc-each": "^1.1.0",
     "nodemon": "^1.11.0",
@@ -28,9 +30,11 @@
     "build-css": "lessc-each src/less/ src/css/",
     "watch-less": "catw -wc 'npm run build-css' src/less/*.less",
     "start-js": "react-scripts start",
-    "start": "npm-run-all -p server watch-less start-js",
-    "build": "npm run build-css && react-scripts build",
-    "server": "nodemon --inspect --watch api api/index.js",
+    "server-dev": "nodemon --inspect --watch api --exec babel-node api/index.js --presets es2015",
+    "start": "npm-run-all -p watch-less start-js server-dev",
+    "server-build": "babel api -d build/api --presets es2015",
+    "build": "react-scripts build && npm-run-all -p build-css server-build",
+    "prod": "node build/api/index.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
