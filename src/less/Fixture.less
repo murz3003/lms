@@ -2,13 +2,58 @@
 @import './imports/buttons.less';
 
 .fixture {
+    position: relative;
+
     div {
         display: inline-block;
         vertical-align: middle;
     }
 
+    .home-team {
+        text-align: right;
+        width: 45%;
+
+        .team-crest {
+            padding-left: @padding-base;
+        }
+    }
+
+    .away-team {
+        text-align: left;
+        width: 45%;
+
+        .team-crest {
+            padding-right: @padding-base;
+        }
+    }
+
+
     .team-crest img {
         height: @padding-base * 5;
         width: @padding-base * 5;
+        padding: 0 @padding-small;
+    }
+
+    button {
+        width: 4em;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .score,
+    .versus {
+        display: inline-block;
+        width: 10%;
+    }
+
+    time {
+        display: inline-block;
+        height: 100%;
+        line-height: 3.4em;
+        vertical-align: middle;
+        font-size: 0.8em;
+        color: @grey-light;
+        position: absolute;
+        right: @padding-base;
     }
 }

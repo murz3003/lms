@@ -19,7 +19,26 @@ const provider = {
 
 const lookups = {
     shortNames: {
-        'arsenal': 'ARS'
+        'arsenal': 'ARS',
+        'bournemouth': 'BOU',
+        'burnley': 'BUR',
+        'chelsea': 'CHE',
+        'crystal_palace': 'CRY',
+        'everton': 'EVE',
+        'hull_city': 'HUL',
+        'leicester_city': 'LEI',
+        'liverpool': 'LIV',
+        'man_city': 'MCI',
+        'man_united': 'MUN',
+        'middlesbrough': 'MFC',
+        'southampton': 'SOU',
+        'stoke_city': 'STK',
+        'sunderland': 'SUN',
+        'swansea_city': 'SWN',
+        'tottenham': 'TOT',
+        'watford': 'WAT',
+        'west_bromwich': 'WBA',
+        'west_ham': 'WHU'
     }
 }
 
@@ -60,9 +79,14 @@ export function getRound(league = config.leagues, season = config.season, round)
 
                 rounds.matches = rounds.matches.map(fixture => {
                     const teams = fixture['match_slug'].split('-');
+                    const scores = fixture['match_result'].split('-');
 
                     fixture.home_team_slug = teams[0];
                     fixture.away_team_slug = teams[1];
+                    fixture.home_score = parseInt(scores[0], 10);
+                    fixture.away_score = parseInt(scores[1], 10);
+                    fixture.home_team_short_name = lookups.shortNames[teams[0]];
+                    fixture.away_team_short_name = lookups.shortNames[teams[1]];
 
                     return fixture;
                 });
