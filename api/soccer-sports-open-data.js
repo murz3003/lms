@@ -17,6 +17,12 @@ const provider = {
     }
 };
 
+const lookups = {
+    shortNames: {
+        'arsenal': 'ARS'
+    }
+}
+
 export function getLeague(league = config.leagues) {
     const leagues = Array.isArray(league) ? league : [league];
 
@@ -49,6 +55,19 @@ export function getRound(league = config.leagues, season = config.season, round)
 
         return fetch(url, { headers: provider.headers })
             .then(res => res.json())
-            .then(json => json.data.rounds[0]);
+            .then(json => {
+                const rounds = json.data.rounds[0];
+
+                rounds.matches = rounds.matches.map(fixture => {
+                    const teams = fixture['match_slug'].split('-');
+
+                    fixture.home_team_slug = teams[0];
+                    fixture.away_team_slug = teams[1];
+
+                    return fixture;
+                });
+
+                return rounds;
+            })
     });
 }

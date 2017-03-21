@@ -1,7 +1,8 @@
 export function getCompetitions() {
     return dispatch => {
-        return fetch('/api/competitions').then(
-            res => res.json(res).then(
+        return fetch('/api/competitions')
+            .then(res => res.json(res))
+            .then(
                 competitions => dispatch({
                     type: 'FETCHED_COMPETITIONS',
                     competitions
@@ -10,8 +11,7 @@ export function getCompetitions() {
                     type: 'ERROR',
                     error
                 })
-            )
-        );
+            );
     };
 }
 
@@ -24,8 +24,9 @@ export function selectedCompetition(competition) {
 
 export function getCompetitionDetails(leagueSlug, roundSlug) {
     return dispatch => {
-        return fetch(`/api/competitions/${leagueSlug}/${roundSlug}`).then(
-            res => res.json(res).then(
+        return fetch(`/api/competitions/${leagueSlug}/${roundSlug}`)
+            .then(res => res.json(res))
+            .then(
                 competitionDetails => dispatch({
                     type: 'FETCHED_COMPETITION_DETAILS',
                     competitionDetails
@@ -34,8 +35,7 @@ export function getCompetitionDetails(leagueSlug, roundSlug) {
                     type: 'ERROR',
                     error
                 })
-            )
-        );
+            );
     };
 }
 

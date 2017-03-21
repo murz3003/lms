@@ -32,7 +32,7 @@ server.get('/api/competitions', function (req, res, next) {
     Promise.all(promises).then(data => {
         return {
             league: data[0],
-            round: data[1].find((round, i, arr) => {
+            round: data[1].find(round => {
                 const date = new Date(round.start_date).toISOString();
                 return date > now;
             })
@@ -52,9 +52,12 @@ server.get('/api/competitions/:leagueSlug/:roundSlug', function (req, res, next)
     const promises = provider.getLeague(req.params.leagueSlug).concat(provider.getRound(req.params.leagueSlug, undefined, req.params.roundSlug));
 
     Promise.all(promises).then(data => {
+        const fixtures = data[1].matches;
+        delete data[1].matches;
         const response = {
                 league: data[0],
-                round: data[1]
+                round: data[1],
+                fixtures
             };
 
         res.send(response);

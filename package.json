@@ -35,7 +35,7 @@
     "watch-less": "catw -wc 'npm run build-css' src/less/*.less",
     "start-js": "react-scripts start",
     "server-dev": "nodemon --inspect --watch api --exec babel-node api/index.js --presets es2015 --plugins transform-object-rest-spread",
-    "start": "npm-run-all -p watch-less start-js server-dev",
+    "start": "npm-run-all -p watch-less start-js & npm run server-dev --",
     "server-build": "babel api -d build/api --presets es2015 --plugins transform-object-rest-spread",
     "build": "react-scripts build && npm-run-all -p build-css server-build",
     "prod": "node build/api/index.js",

@@ -13,7 +13,8 @@ const defaultState = {
     },
     competitionDetails: {
         league: null,
-        round: null
+        round: null,
+        fixtures: []
     }
 };
 

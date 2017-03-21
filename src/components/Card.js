@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router';
+import classNames from 'classnames';
 
 import '../css/Card.css';
 
 class Card extends Component {
 
     render() {
+        const className = classNames({
+            card: true,
+            'card-sections': this.props.sections
+        });
+
         return (
-            <div className="card" onClick={this.props.onClick}>
+            <div className={className} onClick={this.props.onClick}>
                 {this.props.children}
             </div>
         );

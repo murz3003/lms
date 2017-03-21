@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
+import moment from 'moment';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { getCompetitionDetails } from '../actions/actionCreators';
@@ -7,7 +8,9 @@ import { getCompetitionDetails } from '../actions/actionCreators';
 import '../css/CompetitionPage.css';
 import '../css/CompetitionCard.css';
 import Card from './Card';
+import CardSection from './CardSection';
 import CardHeader from './CardHeader';
+import Fixture from './Fixture';
 
 class CompetitionPage extends Component {
 
@@ -16,12 +19,23 @@ class CompetitionPage extends Component {
     }
 
     render() {
-        const { league, round } = this.props;
+        const { league, round, fixtures } = this.props;
         const now = new Date();
         const start = round && new Date(round.start_date);
         const hasStarted = now > start;
         const startMoment = start && <Moment format={`[${hasStarted ? 'Started' : 'Starts'} on] D MMMM`} date={start} fromNow />;
         const leagueLogo = league && require(`../images/leagues/${league.league_slug}.svg`);
+        const sections = fixtures.reduce((prev, fixture) => {
+            const date = moment(fixture.date_match).format('dddd D MMMM YYYY');
+
+            if (!prev[date]) {
+                prev[date] = [];
+            }
+
+            prev[date].push(fixture);
+
+            return prev;
+        }, {});
 
         return (
             <div className="competition-page">
@@ -38,6 +52,21 @@ class CompetitionPage extends Component {
                     </Card>
                 ) : null}
 
+                <h3>Fixtures</h3>
+                {this.props.fixtures.length ? (
+                    <Card sections={sections}>
+                        {Object.keys(sections).map((title, i) => {
+                            return (
+                                <CardSection key={i} title={title}>
+                                    {sections[title].map((fixture, i) => (
+                                        <Fixture key={i} fixture={fixture} />
+                                    ))}
+                                </CardSection>
+                            );
+                        })}
+                    </Card>
+                ) : null}
+
                 <Link to="/">Home Page</Link>
             </div>
         );
@@ -47,7 +76,8 @@ class CompetitionPage extends Component {
 function mapStateToProps (state) {
     return {
         league: state.competitionDetails.league,
-        round: state.competitionDetails.round
+        round: state.competitionDetails.round,
+        fixtures: state.competitionDetails.fixtures
     };
 }
 
