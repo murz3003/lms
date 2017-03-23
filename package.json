@@ -7,7 +7,6 @@
     "babel-cli": "^6.24.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
-    "catw": "^1.0.1",
     "lessc-each": "^1.1.0",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.1",
@@ -31,13 +30,13 @@
     "restify": "^4.3.0"
   },
   "scripts": {
-    "build-css": "lessc-each src/less/ src/css/",
-    "watch-less": "catw -wc 'npm run build-css' src/less/*.less",
-    "start-js": "react-scripts start",
     "server-dev": "nodemon --inspect --watch api --exec babel-node api/index.js --presets es2015 --plugins transform-object-rest-spread",
-    "start": "npm-run-all -p watch-less start-js & npm run server-dev --",
     "server-build": "babel api -d build/api --presets es2015 --plugins transform-object-rest-spread",
-    "build": "react-scripts build && npm-run-all -p build-css server-build",
+    "watch-less": "nodemon --watch src/less/*.less --ext less --exec 'npm run build-less'",
+    "build-less": "lessc-each src/less/ src/css/",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-less start-js & npm run server-dev --",
+    "build": "react-scripts build && npm-run-all -p build-less server-build",
     "prod": "node build/api/index.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
