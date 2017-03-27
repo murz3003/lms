@@ -1,18 +1,15 @@
 import fetch from 'node-fetch';
-import minimist from 'minimist';
 
-import * as config from './config';
+import { provider as dataProvider, leagues, currentSeason } from './config';
 
-const apiKey = minimist(process.argv).apiKey;
-
-if (!apiKey) {
-    throw new Error('You must provide an apiKey for the provider: soccer-sports-open-data');
+if (!dataProvider.apiKey) {
+    throw new Error(`You must provide an apiKey for the provider: ${dataProvider.name}`);
 }
 
 const provider = {
     url: 'https://sportsop-soccer-sports-open-data-v1.p.mashape.com/v1',
     headers: {
-        'X-Mashape-Key': apiKey,
+        'X-Mashape-Key': dataProvider.apiKey,
         'Accept': 'application/json'
     }
 };
@@ -42,7 +39,7 @@ const lookups = {
     }
 }
 
-export function getLeague(league = config.leagues) {
+export function getLeague(league = leagues) {
     const leagues = Array.isArray(league) ? league : [league];
 
     return leagues.map(league => {
@@ -54,7 +51,7 @@ export function getLeague(league = config.leagues) {
     });
 }
 
-export function getRounds(league = config.leagues, season = config.season) {
+export function getRounds(league = leagues, season = currentSeason) {
     const leagues = Array.isArray(league) ? league : [league];
 
     return leagues.map(league => {
@@ -66,7 +63,7 @@ export function getRounds(league = config.leagues, season = config.season) {
     });
 }
 
-export function getRound(league = config.leagues, season = config.season, round) {
+export function getRound(league = leagues, season = currentSeason, round) {
     const leagues = Array.isArray(league) ? league : [league];
 
     return leagues.map(league => {

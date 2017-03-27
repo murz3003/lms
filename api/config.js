@@ -1,3 +1,21 @@
+import * as _config from './_config.json';
+
 export const leagues = ['premier-league'];
-export const season = '16-17';
-export const provider = 'soccer-sports-open-data';
+export const currentSeason = '16-17';
+
+export const provider = {
+	name: 'soccer-sports-open-data',
+	apiKey: _config.provider.apiKey || null
+};
+
+export const auth = {
+	google: {
+		clientID: _config.auth.google.clientID || null,
+		clientSecret: _config.auth.google.clientSecret || null,
+		callbackURL: '/auth/google/callback'
+	}
+};
+
+export const db = {
+	url: _config.db.url || null
+};

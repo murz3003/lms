@@ -1,10 +1,30 @@
 import path from 'path';
 import restify from 'restify';
+import mongoose from 'mongoose';
+import passport from 'passport-restify';
+import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
-import { provider as providerName } from './config';
+import * as config from './config';
+import User from './models/user';
 
-const provider = require(path.resolve(__dirname, providerName));
 const server = restify.createServer();
+const provider = require(path.resolve(__dirname, config.provider.name));
+// const db = mongoose.connect(config.db.url);
+
+passport.use(new GoogleStrategy(config.auth.google, function (token, refreshToken, profile, done) {
+    debugger;
+    done(null, profile);
+}));
+
+passport.serializeUser(function (user, done) {
+    done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+    User.findById(id, function(err, user) {
+        done(err, user);
+    });
+});
 
 // Hard code a competition until a model exists
 var enteredCompetition = {
@@ -25,7 +45,29 @@ var enteredCompetition = {
             }
         };
 
-server.get('/api/competitions', function (req, res, next) {
+server.use(restify.queryParser());
+server.use(restify.bodyParser());
+server.use(passport.initialize());
+// server.use(passport.session());
+debugger;
+function isAuthenticated(req, res, next) {
+    debugger;
+    if (req.isAuthenticated()) {
+        return next();
+    }
+
+    res.redirect('/', next);
+}
+
+server.get('/auth/google', passport.authenticate('google', { session: false, scope: ['profile', 'email'] }));
+server.get('/auth/google/callback', passport.authenticate('google', {
+    session: false,
+    failureRedirect: '/'
+}), function (req, res, next) {
+    res.redirect('/api/competitions', next)
+});
+
+server.get('/api/competitions', isAuthenticated, function (req, res, next) {
     const promises = provider.getLeague().concat(provider.getRounds());
     const now = new Date().toISOString();
 
