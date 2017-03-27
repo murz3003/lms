@@ -8,7 +8,6 @@ import App from './components/App';
 import HomePage from './components/HomePage';
 import CompetitionPage from './components/CompetitionPage';
 import NotFound from './components/NotFound';
-import './index.css';
 
 const router = (
     <Provider store={store}>
