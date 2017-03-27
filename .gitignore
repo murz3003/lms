@@ -12,6 +12,9 @@ build
 # build
 src/css
 
+# config
+_config.json
+
 # misc
 .DS_Store
 .env
