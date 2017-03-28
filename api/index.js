@@ -2,6 +2,8 @@ import path from 'path';
 import restify from 'restify';
 import mongoose from 'mongoose';
 import passport from 'passport-restify';
+import jwt from 'jsonwebtoken';
+import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
 import * as config from './config';
@@ -11,9 +13,27 @@ const server = restify.createServer();
 const provider = require(path.resolve(__dirname, config.provider.name));
 const db = mongoose.connect(config.db.url);
 
+passport.use(new JwtStrategy({
+        ...config.auth.jwt,
+        jwtFromRequest: ExtractJwt.fromExtractors([
+            ExtractJwt.fromAuthHeader(),
+            ExtractJwt.fromUrlQueryParameter('access_token')
+        ])
+    }, function (payload, done) {
+        debugger;
+        User.findById(payload, function (err, user) {
+            debugger;
+            if (err) {
+                return done(err);
+            }
+
+            return done(null, user || null);
+        });
+    }));
 passport.use(new GoogleStrategy(config.auth.google, function (token, refreshToken, profile, done) {
     debugger;
     User.findOne({ 'google.id': profile.id }, function (err, user) {
+        debugger;
         if (err) {
             return done(err);
         }
@@ -22,13 +42,20 @@ passport.use(new GoogleStrategy(config.auth.google, function (token, refreshToke
             const newUser = new User();
 
             newUser.google = { id: profile.id, name: profile.displayName, email: profile.emails[0].value };
-            newUser.access_token = token;
 
             newUser.save(function (err, user) {
-                done(err, user);
+                done(err, user, token);
             });
         } else {
-            done(null, user);
+            // if (user.google.token !== token) {
+            //     user.google.token = token;
+            //
+            //     user.save(function (err, user) {
+            //         done(err, user);
+            //     });
+            // } else {
+                done(null, user, token);
+            // }
         }
     });
 }));
@@ -65,8 +92,7 @@ var enteredCompetition = {
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
 server.use(passport.initialize());
-// server.use(passport.session());
-debugger;
+
 function isAuthenticated(req, res, next) {
     debugger;
     if (req.isAuthenticated()) {
@@ -77,16 +103,32 @@ function isAuthenticated(req, res, next) {
 }
 
 server.get('/auth/google', passport.authenticate('google', { session: false, scope: ['profile', 'email'] }));
-server.get('/auth/google/callback', passport.authenticate('google', {
-    session: false,
-    failureRedirect: '/'
-}), function (req, res, next) {
-    debugger;
-    const token = req.user.access_token;
-    res.json({ token });
-});
+server.get('/auth/google/callback',
+    passport.authenticate('google', { session: false, failureRedirect: '/' }),
+    function (req, res, next) {
+        debugger;
+        // const access_token = req.user.access_token;
+        const access_token = jwt.sign(req.authInfo, config.auth.jwt.secretOrKey);
 
-server.get('/api/competitions', isAuthenticated, function (req, res, next) {
+        res.redirect({
+            pathname: '/api/competitions',
+            query: { access_token }
+        }, next);
+    });
+
+server.use(function (req, res, next) {
+    debugger;
+    passport.authenticate('jwt', { session: false }, function (err, user, info) {
+        debugger;
+        if (user) {
+            req.user = user
+        }
+        next();
+    })(req, res, next);
+});
+server.get('/api/competitions', function (req, res, next) {
+    debugger;
+    const user = req.isAuthenticated() ? req.user : null;
     const promises = provider.getLeague().concat(provider.getRounds());
     const now = new Date().toISOString();
 

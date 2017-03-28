@@ -9,11 +9,8 @@ export const provider = {
 };
 
 export const auth = {
-	google: {
-		clientID: _config.auth.google.clientID || null,
-		clientSecret: _config.auth.google.clientSecret || null,
-		callbackURL: '/auth/google/callback'
-	}
+	..._config.auth,
+	google: { ..._config.auth.google, callbackURL: '/auth/google/callback' }
 };
 
 export const db = {
