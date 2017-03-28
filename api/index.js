@@ -5,15 +5,32 @@ import passport from 'passport-restify';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
 import * as config from './config';
-import User from './models/user';
+import { User } from './models/user';
 
 const server = restify.createServer();
 const provider = require(path.resolve(__dirname, config.provider.name));
-// const db = mongoose.connect(config.db.url);
+const db = mongoose.connect(config.db.url);
 
 passport.use(new GoogleStrategy(config.auth.google, function (token, refreshToken, profile, done) {
     debugger;
-    done(null, profile);
+    User.findOne({ 'google.id': profile.id }, function (err, user) {
+        if (err) {
+            return done(err);
+        }
+
+        if (!user) {
+            const newUser = new User();
+
+            newUser.google = { id: profile.id, name: profile.displayName, email: profile.emails[0].value };
+            newUser.access_token = token;
+
+            newUser.save(function (err, user) {
+                done(err, user);
+            });
+        } else {
+            done(null, user);
+        }
+    });
 }));
 
 passport.serializeUser(function (user, done) {
@@ -64,7 +81,9 @@ server.get('/auth/google/callback', passport.authenticate('google', {
     session: false,
     failureRedirect: '/'
 }), function (req, res, next) {
-    res.redirect('/api/competitions', next)
+    debugger;
+    const token = req.user.access_token;
+    res.json({ token });
 });
 
 server.get('/api/competitions', isAuthenticated, function (req, res, next) {

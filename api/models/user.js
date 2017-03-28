@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const userSchema = mongoose.Schema({
+const UserSchema = mongoose.Schema({
+    access_token: String,
 	google: {
 		id: String,
 		token: String,
@@ -9,4 +10,4 @@ const userSchema = mongoose.Schema({
 	}
 });
 
-export const User = mongoose.model('User', userSchema);
+export const User = mongoose.model('User', UserSchema);
