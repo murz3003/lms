@@ -15,6 +15,9 @@ const defaultState = {
         league: null,
         round: null,
         fixtures: []
+    },
+    user: {
+        isAuthenticated: false
     }
 };
 

@@ -36,7 +36,7 @@ class HomePage extends Component {
                     </Card>
                 ))}
 
-                <Link to="/competition">Competition Page</Link>
+                <Link to="/login">Login</Link>
             </div>
         );
     }

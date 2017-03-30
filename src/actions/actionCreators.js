@@ -1,17 +1,15 @@
 export function getCompetitions() {
     return dispatch => {
         return fetch('/api/competitions')
-            .then(res => res.json(res))
-            .then(
-                competitions => dispatch({
-                    type: 'FETCHED_COMPETITIONS',
-                    competitions
-                }),
-                error => dispatch({
-                    type: 'ERROR',
-                    error
-                })
-            );
+            .then(res => res.json())
+            .then(competitions => dispatch({
+                type: 'FETCHED_COMPETITIONS',
+                competitions
+            }))
+            .catch(error => dispatch({
+                type: 'ERROR',
+                error
+            }));
     };
 }
 
@@ -25,17 +23,33 @@ export function selectedCompetition(competition) {
 export function getCompetitionDetails(leagueSlug, roundSlug) {
     return dispatch => {
         return fetch(`/api/competitions/${leagueSlug}/${roundSlug}`)
-            .then(res => res.json(res))
-            .then(
-                competitionDetails => dispatch({
-                    type: 'FETCHED_COMPETITION_DETAILS',
-                    competitionDetails
-                }),
-                error => dispatch({
-                    type: 'ERROR',
-                    error
-                })
-            );
+            .then(res => res.json())
+            .then(competitionDetails => dispatch({
+                type: 'FETCHED_COMPETITION_DETAILS',
+                competitionDetails
+            }))
+            .catch(error => dispatch({
+                type: 'ERROR',
+                error
+            }));
+    };
+}
+
+export function socialLogin(socialData, provider) {
+    return dispatch => {
+        return fetch(`/auth/${provider}`, {
+                method: 'POST',
+                body: socialData
+            })
+            .then(res => res.json())
+            .then(user => dispatch({
+                type: 'SOCIAL_LOGIN',
+                user
+            }))
+            .catch(error => dispatch({
+                type: 'ERROR',
+                error
+            }));
     };
 }
 

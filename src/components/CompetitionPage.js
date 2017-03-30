@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { getCompetitionDetails } from '../actions/actionCreators';
 
 import '../css/CompetitionPage.css';
-import '../css/CompetitionCard.css';
 import Card from './Card';
 import CardSection from './CardSection';
 import CardHeader from './CardHeader';

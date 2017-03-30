@@ -102,6 +102,15 @@ function isAuthenticated(req, res, next) {
     res.redirect('/', next);
 }
 
+server.post('/auth/google', function (req, res, next) {
+    debugger;
+    res.json({
+        user: {
+            name: 'dav',
+            age: 31
+        }
+    });
+});
 server.get('/auth/google', passport.authenticate('google', { session: false, scope: ['profile', 'email'] }));
 server.get('/auth/google/callback',
     passport.authenticate('google', { session: false, failureRedirect: '/' }),
