@@ -30,35 +30,27 @@ passport.use(new JwtStrategy({
             return done(null, user || null);
         });
     }));
-passport.use(new GoogleStrategy(config.auth.google, function (token, refreshToken, profile, done) {
-    debugger;
-    User.findOne({ 'google.id': profile.id }, function (err, user) {
-        debugger;
-        if (err) {
-            return done(err);
-        }
-
-        if (!user) {
-            const newUser = new User();
-
-            newUser.google = { id: profile.id, name: profile.displayName, email: profile.emails[0].value };
-
-            newUser.save(function (err, user) {
-                done(err, user, token);
-            });
-        } else {
-            // if (user.google.token !== token) {
-            //     user.google.token = token;
-            //
-            //     user.save(function (err, user) {
-            //         done(err, user);
-            //     });
-            // } else {
-                done(null, user, token);
-            // }
-        }
-    });
-}));
+// passport.use(new GoogleStrategy(config.auth.google, function (token, refreshToken, profile, done) {
+//     debugger;
+//     User.findOne({ 'google.id': profile.id }, function (err, user) {
+//         debugger;
+//         if (err) {
+//             return done(err);
+//         }
+//
+//         if (!user) {
+//             const newUser = new User();
+//
+//             newUser.google = { id: profile.id, name: profile.displayName, email: profile.emails[0].value };
+//
+//             newUser.save(function (err, user) {
+//                 done(err, user, token);
+//             });
+//         } else {
+//             done(null, user, token);
+//         }
+//     });
+// }));
 
 passport.serializeUser(function (user, done) {
     done(null, user.id);
@@ -104,6 +96,28 @@ function isAuthenticated(req, res, next) {
 
 server.post('/auth/google', function (req, res, next) {
     debugger;
+    const body = JSON.parse(req.body);
+    const data = {
+        firstName: body.profileObj.givenName,
+        lastName: body.profileObj.familyName,
+        emails: [body.profileObj.email],
+        google: body.profileObj
+    };
+
+    User.findOrCreate({ 'google.googleId': body.googleId }, data, function (err, user) {
+        debugger;
+        // res.json({
+        //     user: {
+        //         name: 'dav',
+        //         age: 31
+        //     }
+        // });
+        res.redirect('/auth/token', next);
+    });
+});
+
+server.get('/auth/token', function (req, res, next) {
+    debugger;
     res.json({
         user: {
             name: 'dav',
@@ -111,19 +125,19 @@ server.post('/auth/google', function (req, res, next) {
         }
     });
 });
-server.get('/auth/google', passport.authenticate('google', { session: false, scope: ['profile', 'email'] }));
-server.get('/auth/google/callback',
-    passport.authenticate('google', { session: false, failureRedirect: '/' }),
-    function (req, res, next) {
-        debugger;
-        // const access_token = req.user.access_token;
-        const access_token = jwt.sign(req.authInfo, config.auth.jwt.secretOrKey);
-
-        res.redirect({
-            pathname: '/api/competitions',
-            query: { access_token }
-        }, next);
-    });
+// server.get('/auth/google', passport.authenticate('google', { session: false, scope: ['profile', 'email'] }));
+// server.get('/auth/google/callback',
+//     passport.authenticate('google', { session: false, failureRedirect: '/' }),
+//     function (req, res, next) {
+//         debugger;
+//         // const access_token = req.user.access_token;
+//         const access_token = jwt.sign(req.authInfo, config.auth.jwt.secretOrKey);
+//
+//         res.redirect({
+//             pathname: '/api/competitions',
+//             query: { access_token }
+//         }, next);
+//     });
 
 server.use(function (req, res, next) {
     debugger;

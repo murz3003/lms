@@ -39,7 +39,7 @@ export function socialLogin(socialData, provider) {
     return dispatch => {
         return fetch(`/auth/${provider}`, {
                 method: 'POST',
-                body: socialData
+                body: JSON.stringify(socialData)
             })
             .then(res => res.json())
             .then(user => dispatch({
