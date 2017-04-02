@@ -1,10 +1,8 @@
 import path from 'path';
 import restify from 'restify';
+import namespace from 'restify-namespace';
 import mongoose from 'mongoose';
-import passport from 'passport-restify';
 import jwt from 'jsonwebtoken';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 
 import * as config from './config';
 import { User } from './models/user';
@@ -13,54 +11,13 @@ const server = restify.createServer();
 const provider = require(path.resolve(__dirname, config.provider.name));
 const db = mongoose.connect(config.db.url);
 
-passport.use(new JwtStrategy({
-        ...config.auth.jwt,
-        jwtFromRequest: ExtractJwt.fromExtractors([
-            ExtractJwt.fromAuthHeader(),
-            ExtractJwt.fromUrlQueryParameter('access_token')
-        ])
-    }, function (payload, done) {
-        debugger;
-        User.findById(payload, function (err, user) {
-            debugger;
-            if (err) {
-                return done(err);
-            }
-
-            return done(null, user || null);
-        });
-    }));
-// passport.use(new GoogleStrategy(config.auth.google, function (token, refreshToken, profile, done) {
-//     debugger;
-//     User.findOne({ 'google.id': profile.id }, function (err, user) {
-//         debugger;
-//         if (err) {
-//             return done(err);
-//         }
-//
-//         if (!user) {
-//             const newUser = new User();
-//
-//             newUser.google = { id: profile.id, name: profile.displayName, email: profile.emails[0].value };
-//
-//             newUser.save(function (err, user) {
-//                 done(err, user, token);
-//             });
-//         } else {
-//             done(null, user, token);
-//         }
-//     });
-// }));
-
-passport.serializeUser(function (user, done) {
-    done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-    User.findById(id, function(err, user) {
-        done(err, user);
-    });
-});
+const requiresAuthentication = function (req, res, next) {
+    if (req.isAuthenticated()) {
+        next();
+    } else {
+        res.send(401);
+    }
+}
 
 // Hard code a competition until a model exists
 var enteredCompetition = {
@@ -83,21 +40,42 @@ var enteredCompetition = {
 
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
-server.use(passport.initialize());
 
-function isAuthenticated(req, res, next) {
-    debugger;
-    if (req.isAuthenticated()) {
-        return next();
-    }
+server.use(function (req, res, next) {
+    req.isAuthenticated = function () {
+        const auth = req.headers.authorization || '';
+        const token = auth.split(' ');
 
-    res.redirect('/', next);
-}
+        if (token[0] === 'Bearer') {
+            try {
+                req.user = jwt.verify(token[1], config.auth.jwt.secretOrKey);
+
+                return true;
+            } catch(err) {
+                return false;
+            }
+        }
+
+        return false;
+    };
+
+    next();
+});
+
+server.get('/profile', requiresAuthentication, function (req, res, next) {
+    User.findById({ _id: req.user._id }, function (err, user) {
+        if (err) {
+            res.json(500, err);
+        }
+
+        res.json({ user });
+    });
+});
 
 server.post('/auth/google', function (req, res, next) {
-    debugger;
     const body = JSON.parse(req.body);
     const data = {
+        accessToken: body.accessToken,
         firstName: body.profileObj.givenName,
         lastName: body.profileObj.familyName,
         emails: [body.profileObj.email],
@@ -105,88 +83,55 @@ server.post('/auth/google', function (req, res, next) {
     };
 
     User.findOrCreate({ 'google.googleId': body.googleId }, data, function (err, user) {
-        debugger;
-        // res.json({
-        //     user: {
-        //         name: 'dav',
-        //         age: 31
-        //     }
-        // });
-        res.redirect('/auth/token', next);
-    });
-});
-
-server.get('/auth/token', function (req, res, next) {
-    debugger;
-    res.json({
-        user: {
-            name: 'dav',
-            age: 31
+        if (err) {
+            res.json(500, err);
         }
-    });
-});
-// server.get('/auth/google', passport.authenticate('google', { session: false, scope: ['profile', 'email'] }));
-// server.get('/auth/google/callback',
-//     passport.authenticate('google', { session: false, failureRedirect: '/' }),
-//     function (req, res, next) {
-//         debugger;
-//         // const access_token = req.user.access_token;
-//         const access_token = jwt.sign(req.authInfo, config.auth.jwt.secretOrKey);
-//
-//         res.redirect({
-//             pathname: '/api/competitions',
-//             query: { access_token }
-//         }, next);
-//     });
 
-server.use(function (req, res, next) {
-    debugger;
-    passport.authenticate('jwt', { session: false }, function (err, user, info) {
-        debugger;
-        if (user) {
-            req.user = user
-        }
-        next();
-    })(req, res, next);
-});
-server.get('/api/competitions', function (req, res, next) {
-    debugger;
-    const user = req.isAuthenticated() ? req.user : null;
-    const promises = provider.getLeague().concat(provider.getRounds());
-    const now = new Date().toISOString();
+        const token = jwt.sign(user.toJSON(), config.auth.jwt.secretOrKey);
 
-    Promise.all(promises).then(data => {
-        return {
-            league: data[0],
-            round: data[1].find(round => {
-                const date = new Date(round.start_date).toISOString();
-                return date > now;
-            })
-        };
-    }).then(data => {
-        const response = {
-                entered: [{...enteredCompetition, ...data}], // Only when logged in
-                available: [{...availableCompetition, ...data}],
-                ended: [] // Only when logged in
-            };
-
-        res.send(response);
+        res.json({ user, token });
     });
 });
 
-server.get('/api/competitions/:leagueSlug/:roundSlug', function (req, res, next) {
-    const promises = provider.getLeague(req.params.leagueSlug).concat(provider.getRound(req.params.leagueSlug, undefined, req.params.roundSlug));
+namespace(server, '/api', function () {
+    server.get('/competitions', function (req, res, next) {
+        const user = req.isAuthenticated() ? req.user : null;
+        const promises = provider.getLeague().concat(provider.getRounds());
+        const now = new Date().toISOString();
 
-    Promise.all(promises).then(data => {
-        const fixtures = data[1].matches;
-        delete data[1].matches;
-        const response = {
+        Promise.all(promises).then(data => {
+            return {
                 league: data[0],
-                round: data[1],
-                fixtures
+                round: data[1].find(round => {
+                    const date = new Date(round.start_date).toISOString();
+                    return date > now;
+                })
             };
+        }).then(data => {
+            const response = {
+                    entered: user ? [{...enteredCompetition, ...data}] : [], // Only when logged in
+                    available: [{...availableCompetition, ...data}],
+                    ended: [] // Only when logged in
+                };
 
-        res.send(response);
+            res.json(response);
+        });
+    });
+
+    server.get('/competitions/:leagueSlug/:roundSlug', function (req, res, next) {
+        const promises = provider.getLeague(req.params.leagueSlug).concat(provider.getRound(req.params.leagueSlug, undefined, req.params.roundSlug));
+
+        Promise.all(promises).then(data => {
+            const fixtures = data[1].matches;
+            delete data[1].matches;
+            const response = {
+                    league: data[0],
+                    round: data[1],
+                    fixtures
+                };
+
+            res.json(response);
+        });
     });
 });
 

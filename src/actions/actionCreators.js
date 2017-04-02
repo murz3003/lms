@@ -1,6 +1,12 @@
+const getAuthHeaders = function () {
+    const token = localStorage.getItem('accessToken');
+
+    return token ? { Authorization: `Bearer ${token}`} : {};
+}
+
 export function getCompetitions() {
     return dispatch => {
-        return fetch('/api/competitions')
+        return fetch('/api/competitions', { headers: getAuthHeaders() })
             .then(res => res.json())
             .then(competitions => dispatch({
                 type: 'FETCHED_COMPETITIONS',
@@ -35,6 +41,21 @@ export function getCompetitionDetails(leagueSlug, roundSlug) {
     };
 }
 
+export function getUser() {
+    return dispatch => {
+        return fetch('/profile')
+            .then(res => res.json())
+            .then(json => dispatch({
+                type: 'GET_USER_SUCCESS',
+                user: json.user
+            }))
+            .catch(error => dispatch({
+                type: 'ERROR',
+                error
+            }));
+    }
+}
+
 export function socialLogin(socialData, provider) {
     return dispatch => {
         return fetch(`/auth/${provider}`, {
@@ -42,10 +63,14 @@ export function socialLogin(socialData, provider) {
                 body: JSON.stringify(socialData)
             })
             .then(res => res.json())
-            .then(user => dispatch({
-                type: 'SOCIAL_LOGIN',
-                user
-            }))
+            .then(json => {
+                localStorage.setItem('accessToken', json.token);
+
+                dispatch({
+                    type: 'SOCIAL_LOGIN',
+                    user: json.user
+                });
+            })
             .catch(error => dispatch({
                 type: 'ERROR',
                 error

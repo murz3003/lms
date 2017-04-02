@@ -1,7 +1,8 @@
 export function user (state = {}, action) {
     switch(action.type) {
         case 'SOCIAL_LOGIN':
-            debugger;
+            state = {...state};
+            state = action.user;
             break;
         default:
             return state;

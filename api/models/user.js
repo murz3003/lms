@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const UserSchema = mongoose.Schema({
+    accessToken: String,
     firstName: String,
     lastName: String,
     emails: Array,
@@ -8,9 +9,7 @@ const UserSchema = mongoose.Schema({
 });
 
 UserSchema.statics.findOrCreate = function (filter, data, done) {
-    debugger;
     User.findOne(filter, function (err, user) {
-        debugger;
         if (err) {
             return done(err);
         }

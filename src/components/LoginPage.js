@@ -8,8 +8,19 @@ import '../css/LoginPage.css';
 
 class LoginPage extends Component {
 
+    componentWillMount() {
+        if (this.props.user) {
+            this.props.router.push('/profile');
+        }
+    }
+
+    componentWillUpdate(nextProps) {
+        if (nextProps.user) {
+            this.props.router.push('/');
+        }
+    }
+
     handleSocialLogin(socialData, provider) {
-        debugger;
         this.props.dispatch(socialLogin(socialData, provider));
     }
 
