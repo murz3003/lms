@@ -9,7 +9,7 @@ export function getCompetitions() {
         return fetch('/api/competitions', { headers: getAuthHeaders() })
             .then(res => res.json())
             .then(competitions => dispatch({
-                type: 'FETCHED_COMPETITIONS',
+                type: 'GET_COMPETITIONS_SUCCESS',
                 competitions
             }))
             .catch(error => dispatch({
@@ -31,7 +31,7 @@ export function getCompetitionDetails(leagueSlug, roundSlug) {
         return fetch(`/api/competitions/${leagueSlug}/${roundSlug}`)
             .then(res => res.json())
             .then(competitionDetails => dispatch({
-                type: 'FETCHED_COMPETITION_DETAILS',
+                type: 'GET_COMPETITION_DETAILS_SUCCESS',
                 competitionDetails
             }))
             .catch(error => dispatch({
@@ -41,12 +41,12 @@ export function getCompetitionDetails(leagueSlug, roundSlug) {
     };
 }
 
-export function getUser() {
+export function getUserProfile() {
     return dispatch => {
-        return fetch('/profile')
+        return fetch('/profile', { headers: getAuthHeaders() })
             .then(res => res.json())
             .then(json => dispatch({
-                type: 'GET_USER_SUCCESS',
+                type: 'GET_USER_PROFILE_SUCCESS',
                 user: json.user
             }))
             .catch(error => dispatch({
@@ -67,7 +67,7 @@ export function socialLogin(socialData, provider) {
                 localStorage.setItem('accessToken', json.token);
 
                 dispatch({
-                    type: 'SOCIAL_LOGIN',
+                    type: 'SOCIAL_LOGIN_SUCCESS',
                     user: json.user
                 });
             })

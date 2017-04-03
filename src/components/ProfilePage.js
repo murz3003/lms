@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import GoogleLogin from 'react-google-login';
-import { getUser } from '../actions/actionCreators';
+import { getUserProfile } from '../actions/actionCreators';
 
 import '../css/ProfilePage.css';
 
@@ -15,7 +14,9 @@ class ProfilePage extends Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(getUser());
+        if (this.props.user) {
+            this.props.dispatch(getUserProfile());
+        }
     }
 
     render() {

@@ -25,7 +25,7 @@ class LoginPage extends Component {
     }
 
     render() {
-        return (
+        return (!this.props.user && (
             <div className="login-page">
                 <div>
                     <GoogleLogin
@@ -37,7 +37,7 @@ class LoginPage extends Component {
 
                 <Link to="/">Home Page</Link>
             </div>
-        );
+        ));
     }
 }
 

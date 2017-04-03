@@ -1,6 +1,6 @@
 export function competitions (state = {}, action) {
     switch(action.type) {
-        case 'FETCHED_COMPETITIONS':
+        case 'GET_COMPETITIONS_SUCCESS':
             state = {...state};
             state = action.competitions;
             break;
@@ -13,7 +13,7 @@ export function competitions (state = {}, action) {
 
 export function competitionDetails (state = {}, action) {
     switch(action.type) {
-        case 'FETCHED_COMPETITION_DETAILS':
+        case 'GET_COMPETITION_DETAILS_SUCCESS':
             state = {...state};
             state = action.competitionDetails;
             break;

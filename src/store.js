@@ -6,7 +6,7 @@ import jwt_decode from 'jwt-decode';
 
 import rootReducer from './reducers/index';
 
-debugger;
+const token = localStorage.getItem('accessToken');
 const defaultState = {
     competitions: {
         entered: [],
@@ -18,7 +18,7 @@ const defaultState = {
         round: null,
         fixtures: []
     },
-    user: jwt_decode(localStorage.getItem('accessToken')) || null
+    user: (token ? jwt_decode(token) : null)
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
