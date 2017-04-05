@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { getCompetitions, selectedCompetition } from '../actions/actionCreators';
 
@@ -18,27 +18,34 @@ class HomePage extends Component {
     }
 
     render() {
+        debugger;
         return (
-            <div className="home-page">
-                <p>This is the Home Page</p>
-
-                <h3>In progress</h3>
-                {this.props.competitions.entered.map((competition, i) => (
-                    <Card key={i} onClick={() => { this.handleCompetitionCardClick(competition); }}>
-                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={true} pickedTeam={competition.pickedTeam} streak={competition.streak} />
-                    </Card>
-                ))}
-
-                <h3>Competitions</h3>
-                {this.props.competitions.available.map((competition, i) => (
-                    <Card key={i}>
-                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={false} />
-                    </Card>
-                ))}
-
-                <Link to="/login">Login</Link>
+            <div>
+                <p>Home page here</p>
+                <Link to="/login">Login page</Link>
             </div>
         );
+        // return (
+        //     <div className="home-page">
+        //         <p>This is the Home Page</p>
+        //
+        //         <h3>In progress</h3>
+        //         {this.props.competitions.entered.map((competition, i) => (
+        //             <Card key={i} onClick={() => { this.handleCompetitionCardClick(competition); }}>
+        //                 <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={true} pickedTeam={competition.pickedTeam} streak={competition.streak} />
+        //             </Card>
+        //         ))}
+        //
+        //         <h3>Competitions</h3>
+        //         {this.props.competitions.available.map((competition, i) => (
+        //             <Card key={i}>
+        //                 <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={false} />
+        //             </Card>
+        //         ))}
+        //
+        //         <Link to="/login">Login</Link>
+        //     </div>
+        // );
     }
 }
 

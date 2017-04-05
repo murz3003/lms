@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import GoogleLogin from 'react-google-login';
 import { socialLogin } from '../actions/actionCreators';
@@ -9,14 +9,15 @@ import '../css/LoginPage.css';
 class LoginPage extends Component {
 
     componentWillMount() {
+        debugger;
         if (this.props.user) {
-            this.props.router.push('/profile');
+            this.props.history.push('/profile');
         }
     }
 
     componentWillUpdate(nextProps) {
         if (nextProps.user) {
-            this.props.router.push('/');
+            this.props.history.push('/');
         }
     }
 
@@ -25,19 +26,25 @@ class LoginPage extends Component {
     }
 
     render() {
-        return (!this.props.user && (
-            <div className="login-page">
-                <div>
-                    <GoogleLogin
-                        clientId="162701122782-3bfogihclh49gfc91r797ctlnhvmeh0a.apps.googleusercontent.com"
-                        onSuccess={response => { this.handleSocialLogin(response, 'google')}}
-                        onFailure={response => { this.handleSocialLogin(response, 'google')}}
-                    />
-                </div>
-
-                <Link to="/">Home Page</Link>
+        return (
+            <div>
+                <p>Login page</p>
+                <Link to="/">Home page</Link>
             </div>
-        ));
+        );
+        // return (!this.props.user && (
+        //     <div className="login-page">
+        //         <div>
+        //             <GoogleLogin
+        //                 clientId="162701122782-3bfogihclh49gfc91r797ctlnhvmeh0a.apps.googleusercontent.com"
+        //                 onSuccess={response => { this.handleSocialLogin(response, 'google')}}
+        //                 onFailure={response => { this.handleSocialLogin(response, 'google')}}
+        //             />
+        //         </div>
+        //
+        //         <Link to="/">Home Page</Link>
+        //     </div>
+        // ));
     }
 }
 

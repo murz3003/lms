@@ -1,7 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute } from 'react-router';
 import { Provider } from 'react-redux';
+import { Route } from 'react-router-dom';
+import { ConnectedRouter } from 'react-router-redux';
 import store, { history } from './store';
 
 import App from './components/App';
@@ -13,15 +14,12 @@ import NotFound from './components/NotFound';
 
 const router = (
     <Provider store={store}>
-        <Router history={history}>
-            <Route path="/" component={App}>
-                <IndexRoute component={HomePage} />
-                <Route path="/profile" component={ProfilePage} />
-                <Route path="/login" component={LoginPage} />
-                <Route path="/competition/:leagueSlug/:roundSlug" component={CompetitionPage} />
-                <Route path="*" component={NotFound} />
-             </Route>
-        </Router>
+        <ConnectedRouter history={history}>
+            <App>
+                <Route exact path="/" component={HomePage} />
+                <Route exact path="/login" component={LoginPage} />
+            </App>
+        </ConnectedRouter>
     </Provider>
 );
 

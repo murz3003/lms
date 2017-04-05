@@ -8,7 +8,7 @@ const rootReducer = combineReducers({
     competitions,
     competitionDetails,
     user,
-    routing: routerReducer
+    router: routerReducer
 });
 
 export default rootReducer;

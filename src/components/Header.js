@@ -1,11 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import '../css/Header.css';
 import logo from '../images/logo.svg';
 
 const Header = (props) => {
+    debugger;
     const className = classNames({
         header: true,
         'header-small': props.pathname !== '/'

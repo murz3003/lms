@@ -5,10 +5,10 @@ import '../css/App.css';
 
 class App extends Component {
     render() {
+        debugger;
         return (
             <div className="app">
-                <Header pathname={this.props.location.pathname} />
-                {React.cloneElement(this.props.children, this.props)}
+                <Header />
             </div>
         );
     }

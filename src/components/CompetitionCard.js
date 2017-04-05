@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Moment from 'react-moment';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import '../css/CompetitionCard.css';
 import CardHeader from './CardHeader';
