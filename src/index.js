@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 import store, { history } from './store';
 
@@ -16,8 +16,13 @@ const router = (
     <Provider store={store}>
         <ConnectedRouter history={history}>
             <App>
-                <Route exact path="/" component={HomePage} />
-                <Route exact path="/login" component={LoginPage} />
+                <Switch>
+                    <Route exact path="/" component={HomePage} />
+                    <Route path="/login" component={LoginPage} />
+                    <Route path="/profile" component={ProfilePage} />
+                    <Route path="/competition/:leagueSlug/:roundSlug" component={CompetitionPage} />
+                    <Route component={NotFound} />
+                </Switch>
             </App>
         </ConnectedRouter>
     </Provider>
