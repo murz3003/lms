@@ -14,7 +14,9 @@ import Fixture from './Fixture';
 class CompetitionPage extends Component {
 
     componentDidMount() {
-        this.props.dispatch(getCompetitionDetails(this.props.params.leagueSlug, this.props.params.roundSlug));
+        const { params } = this.props.match;
+
+        this.props.dispatch(getCompetitionDetails(params.leagueSlug, params.roundSlug));
     }
 
     render() {
