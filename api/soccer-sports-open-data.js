@@ -59,7 +59,13 @@ export function getRounds(league = leagues, season = currentSeason) {
 
         return fetch(url, { headers: provider.headers })
             .then(res => res.json())
-            .then(json => json.data.rounds);
+            .then(json => {
+                return json.data.rounds.map(round => {
+                    round.round = parseInt(round.round_slug.split('-')[1], 10);
+
+                    return round;
+                });
+            });
     });
 }
 
@@ -89,6 +95,6 @@ export function getRound(league = leagues, season = currentSeason, round) {
                 });
 
                 return rounds;
-            })
+            });
     });
 }

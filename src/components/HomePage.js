@@ -25,14 +25,28 @@ class HomePage extends Component {
                 <h3>In progress</h3>
                 {this.props.competitions.entered.map((competition, i) => (
                     <Card key={i} onClick={() => { this.handleCompetitionCardClick(competition); }}>
-                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={true} pickedTeam={competition.pickedTeam} streak={competition.streak} />
+                        <CompetitionCard
+                            league={competition.league}
+                            round={competition.round}
+                            starts={competition.starts}
+                            players={competition.players}
+                            hasEntered={competition.entered}
+                            inProgress={true}
+                            pickedTeam={competition.pickedTeam}
+                            streak={competition.streak} />
                     </Card>
                 ))}
 
                 <h3>Competitions</h3>
                 {this.props.competitions.available.map((competition, i) => (
                     <Card key={i}>
-                        <CompetitionCard league={competition.league} round={competition.round} players={competition.players} hasEntered={competition.entered} inProgress={false} />
+                        <CompetitionCard
+                            league={competition.league}
+                            round={competition.round}
+                            starts={competition.starts}
+                            players={competition.players}
+                            hasEntered={competition.entered}
+                            inProgress={false} />
                     </Card>
                 ))}
 

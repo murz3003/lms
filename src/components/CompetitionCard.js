@@ -12,15 +12,15 @@ import iconCalendar from '../images/icon-calendar.svg';
 class CompetitionCard extends Component {
 
     render() {
-        const { league, round, players, hasEntered, inProgress, pickedTeam } = this.props;
+        const { league, round, starts, players, hasEntered, inProgress, pickedTeam } = this.props;
         const now = new Date();
-        const start = new Date(round.start_date);
+        const start = new Date(starts);
         const hasStarted = now > start;
         const startMoment = <Moment format={`[${hasStarted ? 'Started' : 'Starts'} on] D MMMM`} date={start} fromNow />;
         const leagueLogo = require(`../images/leagues/${league.league_slug}.svg`);
 
         return (
-            <Link to={`/competition/${league.league_slug}/${round.round_slug}`}>
+            <Link to={`/competition/${league.league_slug}/round-${round.current}`}>
                 <div className="competition-card">
                     <div className="league-logo">
                         <img src={leagueLogo} alt={`${league.name} Logo`} />

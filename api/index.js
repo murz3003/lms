@@ -1,16 +1,12 @@
-import path from 'path';
 import restify from 'restify';
 import namespace from 'restify-namespace';
-import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
 import * as config from './config';
+import * as database from './database';
 import { User } from './models/user';
 
 const server = restify.createServer();
-const provider = require(path.resolve(__dirname, config.provider.name));
-const db = mongoose.connect(config.db.url);
-
 const requiresAuthentication = function (req, res, next) {
     if (req.isAuthenticated()) {
         next();
@@ -96,21 +92,13 @@ server.post('/auth/google', function (req, res, next) {
 namespace(server, '/api', function () {
     server.get('/competitions', function (req, res, next) {
         const user = req.isAuthenticated() ? req.user : null;
-        const promises = provider.getLeague().concat(provider.getRounds());
-        const now = new Date().toISOString();
 
-        Promise.all(promises).then(data => {
-            return {
-                league: data[0],
-                round: data[1].find(round => {
-                    const date = new Date(round.start_date).toISOString();
-                    return date > now;
-                })
-            };
-        }).then(data => {
+        database.getOpenCompetitions().then(competitions => {
+            return competitions.length ? competitions : database.createOpenCompetition();
+        }).then(competitions => {
             const response = {
-                    entered: user ? [{...enteredCompetition, ...data}] : [], // Only when logged in
-                    available: [{...availableCompetition, ...data}],
+                    entered: user ? [] : [], // Only when logged in
+                    available: competitions,
                     ended: [] // Only when logged in
                 };
 

@@ -5,7 +5,7 @@ const UserSchema = mongoose.Schema({
     firstName: String,
     lastName: String,
     emails: Array,
-	google: Object
+    google: Object
 });
 
 UserSchema.statics.findOrCreate = function (filter, data, done) {
