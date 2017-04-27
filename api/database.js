@@ -16,13 +16,12 @@ export const getOpenCompetitions = () => {
         .where('starts')
         .gte(now)
         .sort({ starts: 'asc' })
-        .limit(1)
         .exec();
 };
 
-export const createOpenCompetition = () => {
+export const createOpenCompetition = (league) => {
     return new Promise((resolve, reject) => {
-        const promises = provider.getLeague().concat(provider.getRounds());
+        const promises = [provider.getLeague(league), provider.getRounds(league)];
         const now = new Date().toISOString();
 
         Promise.all(promises).then(data => {
@@ -35,7 +34,6 @@ export const createOpenCompetition = () => {
                 })
             };
         }).then(data => {
-            debugger;
             const newCompetition = new Competition({
                     league: data.league,
                     round: {
@@ -47,19 +45,16 @@ export const createOpenCompetition = () => {
                 });
 
             newCompetition.save()
-                .then(doc => resolve([doc]))
+                .then(doc => resolve(doc))
                 .catch(reject);
         }).catch(reject);
     });
 };
 
 export const getCompetition = (league, round) => {
-    debugger;
     return Competition
         .findOne()
-        .where('league.league_slug')
-        .gte(now)
-        .sort({ starts: 'asc' })
-        .limit(1)
+        .where('league.league_slug').equals(league)
+        .where('round.start').equals(round)
         .exec();
 };

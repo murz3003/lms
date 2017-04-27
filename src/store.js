@@ -16,11 +16,7 @@ const defaultState = {
         available: [],
         ended: []
     },
-    competitionDetails: {
-        league: null,
-        round: null,
-        fixtures: []
-    },
+    competitionDetails: {},
     user: (token ? jwt_decode(token) : null)
 };
 

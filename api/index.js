@@ -96,7 +96,15 @@ namespace(server, '/api', function () {
         const user = req.isAuthenticated() ? req.user : null;
 
         database.getOpenCompetitions().then(competitions => {
-            return competitions.length ? competitions : database.createOpenCompetition();
+            if (competitions.length !== config.leagues.length) {
+                const competitionLeagues = competitions.map(competition => competition.league.league_slug);
+                const difference = config.leagues.filter(league => !competitionLeagues.includes(league));
+                const promises = difference.map(league => database.createOpenCompetition(league));
+
+                return Promise.all(promises).then(newCompetitions => competitions.concat(newCompetitions));
+            } else {
+                return competitions;
+            }
         }).then(competitions => {
             const response = {
                     entered: user ? [] : [], // Only when logged in
@@ -109,23 +117,18 @@ namespace(server, '/api', function () {
     });
 
     server.get('/competitions/:leagueSlug/:roundSlug', function (req, res, next) {
-        debugger;
-        database.getCompetition(req.params.leagueSlug, req.params.roundSlug).then(competition => {
-            debugger;
-        });
+        const league = req.params.leagueSlug;
+        const round = req.params.roundSlug.split('round-')[1];
 
-        const promises = provider.getLeague(req.params.leagueSlug).concat(provider.getRound(req.params.leagueSlug, req.params.roundSlug));
+        database.getCompetition(league, round).then(competition => {
+            provider.getRound(league, competition.round.current).then(round => {
+                const response = {
+                        competition,
+                        round
+                    };
 
-        Promise.all(promises).then(data => {
-            const fixtures = data[1].matches;
-            delete data[1].matches;
-            const response = {
-                    league: data[0],
-                    round: data[1],
-                    fixtures
-                };
-
-            res.json(response);
+                res.json(response);
+            });
         });
     });
 });

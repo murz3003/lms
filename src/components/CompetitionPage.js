@@ -20,13 +20,14 @@ class CompetitionPage extends Component {
     }
 
     render() {
-        const { league, round, fixtures } = this.props;
+        const { competition, round } = this.props.competitionDetails;
+        const league = competition && competition.league;
         const now = new Date();
-        const start = round && new Date(round.start_date);
+        const start = competition && new Date(competition.starts);
         const hasStarted = now > start;
         const startMoment = start && <Moment format={`[${hasStarted ? 'Started' : 'Starts'} on] D MMMM`} date={start} fromNow />;
         const leagueLogo = league && require(`../images/leagues/${league.league_slug}.svg`);
-        const sections = fixtures.reduce((prev, fixture) => {
+        const sections = round && round.fixtures.reduce((prev, fixture) => {
             const date = moment(fixture.date_match).format('dddd D MMMM YYYY');
 
             if (!prev[date]) {
@@ -40,7 +41,7 @@ class CompetitionPage extends Component {
 
         return (
             <div className="competition-page">
-                {league && round ? (
+                {competition && round ? (
                     <Card>
                         <div className="competition-card competition-card-small">
                             <div className="league-logo">
@@ -54,7 +55,7 @@ class CompetitionPage extends Component {
                 ) : null}
 
                 <h3>Fixtures</h3>
-                {this.props.fixtures.length ? (
+                {round && round.fixtures.length ? (
                     <Card sections={sections}>
                         {Object.keys(sections).map((title, i) => {
                             return (
@@ -76,9 +77,7 @@ class CompetitionPage extends Component {
 
 function mapStateToProps (state) {
     return {
-        league: state.competitionDetails.league,
-        round: state.competitionDetails.round,
-        fixtures: state.competitionDetails.fixtures
+        competitionDetails: state.competitionDetails
     };
 }
 

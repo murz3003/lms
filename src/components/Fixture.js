@@ -7,7 +7,6 @@ import '../css/Fixture.css';
 class Fixture extends Component {
 
     handleFixtureSelect(team) {
-        debugger;
         this.props.dispatch(selectedFixture(this.props.fixture, team));
     }
 

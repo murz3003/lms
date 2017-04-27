@@ -39,62 +39,56 @@ const lookups = {
     }
 }
 
-export function getLeague(league = leagues) {
-    const leagues = Array.isArray(league) ? league : [league];
+export function getLeague(league) {
+    const url = `${provider.url}/leagues/${league}`;
 
-    return leagues.map(league => {
-        const url = `${provider.url}/leagues/${league}`;
-
-        return fetch(url, { headers: provider.headers })
-            .then(res => res.json())
-            .then(json => json.data.leagues[0]);
-    });
+    return fetch(url, { headers: provider.headers })
+        .then(res => res.json())
+        .then(json => json.data.leagues[0]);
 }
 
-export function getRounds(league = leagues, season = currentSeason) {
-    const leagues = Array.isArray(league) ? league : [league];
+export function getRounds(league, season = currentSeason) {
+    const url = `${provider.url}/leagues/${league}/seasons/${season}/rounds`;
 
-    return leagues.map(league => {
-        const url = `${provider.url}/leagues/${league}/seasons/${season}/rounds`;
+    return fetch(url, { headers: provider.headers })
+        .then(res => res.json())
+        .then(json => {
+            return json.data.rounds.map(round => {
+                round.round = parseInt(round.round_slug.split('-')[1], 10);
 
-        return fetch(url, { headers: provider.headers })
-            .then(res => res.json())
-            .then(json => {
-                return json.data.rounds.map(round => {
-                    round.round = parseInt(round.round_slug.split('-')[1], 10);
-
-                    return round;
-                });
+                return round;
             });
-    });
+        });
 }
 
-export function getRound(league = leagues, round, season = currentSeason,) {
-    const leagues = Array.isArray(league) ? league : [league];
+export function getRound(league, round, season = currentSeason) {
+    if (typeof round === 'number' || parseInt(round, 10) === NaN) {
+        round = `round-${round}`;
+    }
 
-    return leagues.map(league => {
-        const url = `${provider.url}/leagues/${league}/seasons/${season}/rounds/${round}`;
+    const url = `${provider.url}/leagues/${league}/seasons/${season}/rounds/${round}`;
 
-        return fetch(url, { headers: provider.headers })
-            .then(res => res.json())
-            .then(json => {
-                const rounds = json.data.rounds[0];
+    return fetch(url, { headers: provider.headers })
+        .then(res => res.json())
+        .then(json => {
+            const rounds = json.data.rounds[0];
 
-                rounds.matches = rounds.matches.map(fixture => {
-                    const teams = fixture['match_slug'].split('-');
-                    const scores = fixture['match_result'].split('-');
+            rounds.fixtures = rounds.matches.map(fixture => {
+                const teams = fixture['match_slug'].split('-');
+                const scores = fixture['match_result'].split('-');
 
-                    fixture.home_team_slug = teams[0];
-                    fixture.away_team_slug = teams[1];
-                    fixture.home_score = parseInt(scores[0], 10);
-                    fixture.away_score = parseInt(scores[1], 10);
-                    fixture.home_team_short_name = lookups.shortNames[teams[0]];
-                    fixture.away_team_short_name = lookups.shortNames[teams[1]];
+                fixture.home_team_slug = teams[0];
+                fixture.away_team_slug = teams[1];
+                fixture.home_score = parseInt(scores[0], 10);
+                fixture.away_score = parseInt(scores[1], 10);
+                fixture.home_team_short_name = lookups.shortNames[teams[0]];
+                fixture.away_team_short_name = lookups.shortNames[teams[1]];
 
-                    return fixture;
-                });
-
-                return rounds;
+                return fixture;
             });
-    });
+
+            delete rounds.matches;
+
+            return rounds;
+        });
 }
