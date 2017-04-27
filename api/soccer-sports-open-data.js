@@ -69,7 +69,7 @@ export function getRounds(league = leagues, season = currentSeason) {
     });
 }
 
-export function getRound(league = leagues, season = currentSeason, round) {
+export function getRound(league = leagues, round, season = currentSeason,) {
     const leagues = Array.isArray(league) ? league : [league];
 
     return leagues.map(league => {

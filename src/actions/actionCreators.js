@@ -41,6 +41,14 @@ export function getCompetitionDetails(leagueSlug, roundSlug) {
     };
 }
 
+export function selectedFixture(fixture, selection) {
+    return {
+        type: 'SELECTED_FIXTURE',
+        fixture,
+        selection
+    };
+}
+
 export function getUserProfile() {
     return dispatch => {
         return fetch('/profile', { headers: getAuthHeaders() })

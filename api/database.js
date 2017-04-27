@@ -52,3 +52,14 @@ export const createOpenCompetition = () => {
         }).catch(reject);
     });
 };
+
+export const getCompetition = (league, round) => {
+    debugger;
+    return Competition
+        .findOne()
+        .where('league.league_slug')
+        .gte(now)
+        .sort({ starts: 'asc' })
+        .limit(1)
+        .exec();
+};

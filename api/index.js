@@ -1,3 +1,4 @@
+import path from 'path';
 import restify from 'restify';
 import namespace from 'restify-namespace';
 import jwt from 'jsonwebtoken';
@@ -6,6 +7,7 @@ import * as config from './config';
 import * as database from './database';
 import { User } from './models/user';
 
+const provider = require(path.resolve(__dirname, config.provider.name));
 const server = restify.createServer();
 const requiresAuthentication = function (req, res, next) {
     if (req.isAuthenticated()) {
@@ -107,7 +109,12 @@ namespace(server, '/api', function () {
     });
 
     server.get('/competitions/:leagueSlug/:roundSlug', function (req, res, next) {
-        const promises = provider.getLeague(req.params.leagueSlug).concat(provider.getRound(req.params.leagueSlug, undefined, req.params.roundSlug));
+        debugger;
+        database.getCompetition(req.params.leagueSlug, req.params.roundSlug).then(competition => {
+            debugger;
+        });
+
+        const promises = provider.getLeague(req.params.leagueSlug).concat(provider.getRound(req.params.leagueSlug, req.params.roundSlug));
 
         Promise.all(promises).then(data => {
             const fixtures = data[1].matches;
