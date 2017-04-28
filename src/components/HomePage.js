@@ -39,7 +39,7 @@ class HomePage extends Component {
 
                 <h3>Competitions</h3>
                 {this.props.competitions.available.map((competition, i) => (
-                    <Card key={i}>
+                    <Card key={i} onClick={() => { this.handleCompetitionCardClick(competition); }}>
                         <CompetitionCard
                             league={competition.league}
                             round={competition.round}

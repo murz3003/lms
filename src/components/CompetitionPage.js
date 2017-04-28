@@ -14,14 +14,18 @@ import Fixture from './Fixture';
 class CompetitionPage extends Component {
 
     componentDidMount() {
-        const { params } = this.props.match;
+        const { competitionDetails, competitionDetails: { id }, match: { params } } = this.props;
 
-        this.props.dispatch(getCompetitionDetails(params.leagueSlug, params.roundSlug));
+        if (!(id && competitionDetails[id] && competitionDetails[id].round && competitionDetails[id].round.fixtures)) {
+            this.props.dispatch(getCompetitionDetails(params.leagueSlug, params.roundSlug));
+        }
     }
 
     render() {
-        const { competition, round } = this.props.competitionDetails;
-        const league = competition && competition.league;
+        const { competitionDetails, competitionDetails: { id } } = this.props;
+        const { competition, round } = competitionDetails[id] || {};
+        const { league } = competition || {};
+
         const now = new Date();
         const start = competition && new Date(competition.starts);
         const hasStarted = now > start;
@@ -41,7 +45,7 @@ class CompetitionPage extends Component {
 
         return (
             <div className="competition-page">
-                {competition && round ? (
+                {competition &&
                     <Card>
                         <div className="competition-card competition-card-small">
                             <div className="league-logo">
@@ -52,10 +56,10 @@ class CompetitionPage extends Component {
                             </div>
                         </div>
                     </Card>
-                ) : null}
+                }
 
                 <h3>Fixtures</h3>
-                {round && round.fixtures.length ? (
+                {round && round.fixtures.length &&
                     <Card sections={sections}>
                         {Object.keys(sections).map((title, i) => {
                             return (
@@ -67,7 +71,7 @@ class CompetitionPage extends Component {
                             );
                         })}
                     </Card>
-                ) : null}
+                }
 
                 <Link to="/">Home Page</Link>
             </div>

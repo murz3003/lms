@@ -16,7 +16,9 @@ const defaultState = {
         available: [],
         ended: []
     },
-    competitionDetails: {},
+    competitionDetails: {
+        id: null
+    },
     user: (token ? jwt_decode(token) : null)
 };
 

@@ -15,12 +15,13 @@ export function competitionDetails (state = {}, action) {
     switch(action.type) {
         case 'GET_COMPETITION_DETAILS_SUCCESS':
             state = {...state};
-            state = action.competitionDetails;
+            state.id = action.competitionDetails.competition._id;
+            state[action.competitionDetails.competition._id] = action.competitionDetails;
             break;
         case 'SELECTED_COMPETITION':
-            state = {...state}
-            state.league = action.competition.league;
-            state.round = action.competition.round;
+            state = {...state};
+            state.id = action.competition._id;
+            state[action.competition._id] = {...state[action.competition._id], competition: action.competition };
             break;
         default:
             return state;
